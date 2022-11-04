@@ -19,6 +19,7 @@ class Page{
     vector<vector<int>> rows;
 
     public:
+    void update_columns(string tableName, int pageIndex, string column);
 
     string pageName = "";
     Page();

@@ -98,3 +98,21 @@ void Page::writePage()
     }
     fout.close();
 }
+
+void Page::update_columns(string tableName, int pageIndex, string column_name){
+    int col_index=tableCatalogue.getTable(tableName)->getColumnIndex(column_name);
+    int rows=this->rowCount;
+    int new_val=0;
+    for(int i=0;i<rowCount;i++){
+        if(parsedQuery.operator_==ADD){
+            this->rows[i][col_index]+=parsedQuery.update_value;
+        }
+        else if(parsedQuery.operator_==MULTIPLY){
+            this->rows[i][col_index]*=parsedQuery.update_value;
+        }
+        else{
+            this->rows[i][col_index]-=parsedQuery.update_value;
+        }
+    }
+    this->writePage();
+}

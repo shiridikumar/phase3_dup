@@ -17,8 +17,10 @@ Page BufferManager::getPage(string tableName, int pageIndex)
 {
     logger.log("BufferManager::getPage");
     string pageName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
-    if (this->inPool(pageName))
+    if (this->inPool(pageName)){
+        // cout<<"helllo in pool"<<endl;
         return this->getFromPool(pageName);
+    }
     else
         return this->insertIntoPool(tableName, pageIndex);
 }
@@ -76,6 +78,17 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex)
     return page;
 }
 
+int BufferManager::BufferIndex(string tableName, int pageIndex){
+    string pageName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
+    for(int i=0;i<pages.size();i++){
+        if(pages[i].pageName==pageName){
+            pages.erase(pages.begin()+i);
+            return 0;
+        }
+    }
+    return 0;
+}
+
 /**
  * @brief The buffer manager is also responsible for writing pages. This is
  * called when new tables are created using assignment statements.
@@ -118,3 +131,4 @@ void BufferManager::deleteFile(string tableName, int pageIndex)
     string fileName = "../data/temp/"+tableName + "_Page" + to_string(pageIndex);
     this->deleteFile(fileName);
 }
+
