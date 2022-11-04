@@ -1,0 +1,47 @@
+BufferManager::BufferManager
+ParseQuery::clear
+
+Reading New Command: 
+LOAD A
+doCommand
+syntacticParse
+syntacticParseLOAD
+semanticParse
+semanticParseLOAD
+TableCatalogue::isTable
+executeLOAD
+Table::Table
+Table::load
+Table::extractColumnNames
+Table::blockify
+BufferManager::writePage
+Page::Page
+Page::writePage
+TableCatalogue::~insertTable
+ParseQuery::clear
+
+Reading New Command: 
+!tableCatalogu
+ParseQuery::clear
+
+Reading New Command: 
+UPDATE A COLUMN a MULTIPLY 6
+doCommand
+syntacticParse
+syntacticParseSOURCE
+semanticParse
+semanticParseSOURCE
+TableCatalogue::isTable
+ParseQuery::clear
+
+Reading New Command: 
+UPDATE A COLUMN a MULTIPL 6
+doCommand
+syntacticParse
+syntacticParseSOURCE
+semanticParse
+semanticParseSOURCE
+TableCatalogue::isTable
+ParseQuery::clear
+
+Reading New Command: 
