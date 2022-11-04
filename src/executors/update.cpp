@@ -48,9 +48,17 @@ bool semanticParseUPDATE()
 void executeUPDATE(){
     Table table = * tableCatalogue.getTable(parsedQuery.sourceFileName);
     Cursor cursor(table.tableName, 0);
-    vector<int> row;
+    int rowcount=table.rowCount;
     cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
     int ind=bufferManager.BufferIndex(table.tableName,0);
+    string newSourceFile = "../data/" + table.tableName + ".csv";
+    ofstream fout(newSourceFile, ios::out);
+    table.writeRow(table.columns, fout);
+    vector<int> row;
+    for(int i=0;i<table.rowCount;i++){
+        row=cursor.getNext();
+        table.writeRow(row,fout);
+    }
 
     return;
 }
