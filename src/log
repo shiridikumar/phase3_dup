@@ -21,27 +21,14 @@ TableCatalogue::~insertTable
 ParseQuery::clear
 
 Reading New Command: 
-!tableCatalogu
-ParseQuery::clear
-
-Reading New Command: 
-UPDATE A COLUMN a MULTIPLY 6
+UPDATE A COLUMN a MULTIPLY 5
 doCommand
 syntacticParse
 syntacticParseSOURCE
 semanticParse
 semanticParseSOURCE
 TableCatalogue::isTable
-ParseQuery::clear
-
-Reading New Command: 
-UPDATE A COLUMN a MULTIPL 6
-doCommand
-syntacticParse
-syntacticParseSOURCE
-semanticParse
-semanticParseSOURCE
-TableCatalogue::isTable
+TableCatalogue::getTable
 ParseQuery::clear
 
 Reading New Command: 

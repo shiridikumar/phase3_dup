@@ -46,5 +46,7 @@ bool semanticParseUPDATE()
 }
 
 void executeUPDATE(){
+    Table table = * tableCatalogue.getTable(parsedQuery.sourceFileName);
+    // cout<<table.columnCount<<endl;
     return;
 }
