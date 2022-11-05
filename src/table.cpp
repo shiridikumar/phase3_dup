@@ -1,5 +1,7 @@
 #include "global.h"
-
+#include <sys/file.h>
+#include <ext/stdio_filebuf.h>
+#include <unistd.h>
 /**
  * @brief Construct a new Table:: Table object
  *
@@ -54,15 +56,26 @@ bool Table::load()
 {
     logger.log("Table::load");
     fstream fin(this->sourceFileName, ios::in);
+    int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
     string line;
+  
+    int lc=flock(fd,LOCK_EX);
+    
+    cout<<"read lock obtained "<<fd<<endl;
     if (getline(fin, line))
     {
-        fin.close();
+       
         if (this->extractColumnNames(line))
             if (this->blockify())
+                fin.close();
+                // flock(fd,LOCK_UN);
+                // flock(fd,LOCK_EX);
+                // sleep(5);
+                // cout<<"got lock from the file"<<endl;
                 return true;
     }
     fin.close();
+
     return false;
 }
 

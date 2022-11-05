@@ -3,7 +3,7 @@ import threading
 def execute():
     subprocess.Popen('./server <"cmds.txt" ', shell=True)
 l=[]
-for i in range(20):
+for i in range(2):
     t = threading.Thread(target=execute)
     t.start()
     l.append(t)

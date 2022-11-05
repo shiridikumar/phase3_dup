@@ -72,23 +72,37 @@ public:
         fout << endl;
     }
 
-    template <typename T>
-    void writeRow(vector<T> row,FILE * pFile, int flag)
+    void writeRow(vector<int> row, FILE *pFile, int flag)
     {
         if (pFile != NULL)
         {
-            cout << fileno(pFile) << endl;
+            // cout << fileno(pFile) << endl;
             for (int columnCounter = 0; columnCounter < row.size(); columnCounter++)
             {
                 if (columnCounter != 0)
                     fputs(", ", pFile);
-                char  st[1000] ;
-                if(flag==0)
-                {
-                    // cout<<flag<<endl;
-                    sprintf(st,"%d", row[columnCounter]);
-                }
+                char st[1000];
+                // cout<<flag<<endl;
+                sprintf(st, "%d", row[columnCounter]);
                 fputs(st, pFile);
+            }
+            fputs("\n", pFile);
+        }
+        logger.log("Table::printRow");
+    }
+
+    void writeRow(vector<string> row, FILE *pFile, int flag)
+    {
+        if (pFile != NULL)
+        {
+            // cout << fileno(pFile) << endl;
+            for (int columnCounter = 0; columnCounter < row.size(); columnCounter++)
+            {
+                if (columnCounter != 0)
+                    fputs(", ", pFile);
+                char st[1000];
+
+                fputs(row[columnCounter].c_str(), pFile);
             }
             fputs("\n", pFile);
         }

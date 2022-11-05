@@ -21,7 +21,7 @@ TableCatalogue::~insertTable
 ParseQuery::clear
 
 Reading New Command: 
-UPDATE A COLUMN a ADD 5
+UPDATE A COLUMN a ADD 10
 doCommand
 syntacticParse
 syntacticParseSOURCE
@@ -82,3 +82,9 @@ Page::writePage
 ParseQuery::clear
 
 Reading New Command: 
+
+TableCatalogue::~TableCatalogue
+Table::~unload
+BufferManager::deleteFile
+BufferManager::deleteFile: Success
+Table::isPermanent

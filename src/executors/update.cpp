@@ -1,6 +1,6 @@
 #include "global.h"
 #include <sys/file.h>
-
+#include <unistd.h>
 /**
  * @brief 
  * SYNTAX: UPDATE relation_name COLUMN column_name operator value
@@ -55,11 +55,21 @@ void executeUPDATE(){
     // cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
     // int ind=bufferManager.BufferIndex(table.tableName,0);
     string newSourceFile = "../data/" + table.tableName + ".csv";
-    ofstream fout(newSourceFile, ios::out);
+    // ofstream fout(newSourceFile, ios::out);
     vector<int> row;
     FILE *pFile;
     pFile = fopen(newSourceFile.c_str(), "w+");
+    int fd=fileno(pFile);
+    cout<<fd<<"---"<<endl;
+    int lc=flock(fd,LOCK_EX);
+    if(lc==0){
+        cout<<"lock succesful"<<endl;
+    }
+    else{
+        cout<<"lock unsuccesful"<<endl;
+    }
      table.writeRow(table.columns, pFile,1);
+     
     for(int i=0;i<table.rowCount;i++){
         // int flag=(i!=4)?1:0;
         row=cursor.getNext();
@@ -76,7 +86,14 @@ void executeUPDATE(){
         table.writeRow(row,pFile,0);
 
     }
+    //
+
+    sleep(5);
+    cout<<"unlocked"<<endl;
     fclose(pFile);
+    sleep(3);
+    // flock(fd,LOCK_UN);
+    cout<<"completed update"<<endl;
     cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
     int ind=bufferManager.BufferIndex(table.tableName,0);
 
