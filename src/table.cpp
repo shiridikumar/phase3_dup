@@ -59,11 +59,11 @@ bool Table::load()
 {
     logger.log("Table::load");
     fstream fin(this->sourceFileName, ios::in);
-    // datafile=fopen(this->sourceFileName.c_str(),"r+");
+    datafile=fopen(this->sourceFileName.c_str(),"r+");
     int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
-    // fd_dfile=fileno(datafile);
-    // int lc=flock(fd_dfile,LOCK_EX);
-    // cout<<"lock obtained for read "<<fd_dfile<<endl;
+    fd_dfile=fileno(datafile);
+    int lc=flock(fd_dfile,LOCK_EX);
+    cout<<"lock obtained for read "<<fd_dfile<<endl;
     string line;
     if (getline(fin, line))
     {
