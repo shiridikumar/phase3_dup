@@ -2,6 +2,9 @@
 #include <sys/file.h>
 #include <ext/stdio_filebuf.h>
 #include <unistd.h>
+extern FILE* datafile;
+extern int fd_dfile;
+extern fstream fin;
 /**
  * @brief Construct a new Table:: Table object
  *
@@ -56,23 +59,22 @@ bool Table::load()
 {
     logger.log("Table::load");
     fstream fin(this->sourceFileName, ios::in);
+    // datafile=fopen(this->sourceFileName.c_str(),"r+");
     int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
+    // fd_dfile=fileno(datafile);
+    // int lc=flock(fd_dfile,LOCK_EX);
+    // cout<<"lock obtained for read "<<fd_dfile<<endl;
     string line;
-  
-    int lc=flock(fd,LOCK_EX);
-    
-    cout<<"read lock obtained "<<fd<<endl;
     if (getline(fin, line))
     {
-       
-        if (this->extractColumnNames(line))
-            if (this->blockify())
+        if (this->extractColumnNames(line)){
+           
+            if (this->blockify()){
                 fin.close();
-                // flock(fd,LOCK_UN);
-                // flock(fd,LOCK_EX);
-                // sleep(5);
-                // cout<<"got lock from the file"<<endl;
+                // fclose(datafile);
                 return true;
+            }
+        }
     }
     fin.close();
 

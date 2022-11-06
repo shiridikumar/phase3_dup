@@ -13,7 +13,9 @@ vector<string> tokenizedQuery;
 ParsedQuery parsedQuery;
 TableCatalogue tableCatalogue;
 BufferManager bufferManager;
-
+FILE *datafile;
+int fd_dfile;
+fstream fin;
 void doCommand()
 {
     logger.log("doCommand");

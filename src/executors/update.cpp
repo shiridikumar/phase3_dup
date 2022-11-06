@@ -1,6 +1,9 @@
 #include "global.h"
 #include <sys/file.h>
 #include <unistd.h>
+extern FILE* datafile;
+extern int fd_dfile;
+extern fstream fin;
 /**
  * @brief 
  * SYNTAX: UPDATE relation_name COLUMN column_name operator value
@@ -50,29 +53,28 @@ bool semanticParseUPDATE()
 
 void executeUPDATE(){
     Table table = * tableCatalogue.getTable(parsedQuery.sourceFileName);
-    Cursor cursor(table.tableName, 0);
-    int rowcount=table.rowCount;
-    // cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
-    // int ind=bufferManager.BufferIndex(table.tableName,0);
     string newSourceFile = "../data/" + table.tableName + ".csv";
-    // ofstream fout(newSourceFile, ios::out);
+    //  sleep(5);
     vector<int> row;
     FILE *pFile;
+    // flock(fd_dfile,LOCK_UN);
     pFile = fopen(newSourceFile.c_str(), "w+");
     int fd=fileno(pFile);
-    cout<<fd<<"---"<<endl;
-    int lc=flock(fd,LOCK_EX);
-    if(lc==0){
-        cout<<"lock succesful"<<endl;
-    }
-    else{
-        cout<<"lock unsuccesful"<<endl;
-    }
-     table.writeRow(table.columns, pFile,1);
-     
+    FILE *pFile1;
+    string pagename="../data/temp/"+table.tableName + "_Page" + to_string(0);
+    pFile1 = fopen(pagename.c_str(), "w+");
+    int fd1=fileno(pFile1);
+    cout<<fd<<"---"<<fd1<<endl;
+    int lc1=flock(fd1,LOCK_EX);
+    cout<<"lock obtained"<<endl;
+
+    Cursor cursor(table.tableName, 0);
+    int rowcount=table.rowCount;
+    table.writeRow(table.columns, pFile,1);
     for(int i=0;i<table.rowCount;i++){
-        // int flag=(i!=4)?1:0;
+      
         row=cursor.getNext();
+
         if(parsedQuery.operator_==MULTIPLY){
             row[table.getColumnIndex(parsedQuery.column_name)]*=parsedQuery.update_value;
         }
@@ -86,17 +88,15 @@ void executeUPDATE(){
         table.writeRow(row,pFile,0);
 
     }
-    //
 
     sleep(5);
     cout<<"unlocked"<<endl;
+    fclose(pFile1);
+    // flock(LOCK_UN,fd_dfile);
     fclose(pFile);
     sleep(3);
-    // flock(fd,LOCK_UN);
     cout<<"completed update"<<endl;
     cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
     int ind=bufferManager.BufferIndex(table.tableName,0);
-
-
     return;
 }
