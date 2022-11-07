@@ -4,12 +4,19 @@
  * 
  * syntax:
  * R <- SORT relation_name BY column_name IN sorting_order
+ * R <- SORT relation_name BY column_name IN sorting_order BUFFER buffer_size
  * 
  * sorting_order = ASC | DESC 
  */
 bool syntacticParseSORT(){
     logger.log("syntacticParseSORT");
-    if(tokenizedQuery.size()!= 8 || tokenizedQuery[4] != "BY" || tokenizedQuery[6] != "IN"){
+  
+    if (tokenizedQuery.size() != 8 && tokenizedQuery.size() != 10) {
+        cout<<"SYNTAX ERROR"<<endl;
+        return false;
+    }
+
+    if(tokenizedQuery[4] != "BY" || tokenizedQuery[6] != "IN"){
         cout<<"SYNTAX ERROR"<<endl;
         return false;
     }
@@ -26,6 +33,25 @@ bool syntacticParseSORT(){
         cout<<"SYNTAX ERROR"<<endl;
         return false;
     }
+  
+    if(tokenizedQuery.size() == 10) {
+        
+        if(tokenizedQuery[8] != "BUFFER") {
+            cout<<"SYNTAX ERROR"<<endl;
+            return false;
+        }
+
+        try
+        {
+            parsedQuery.sortBufferSize = stoi(tokenizedQuery[9]);
+        }
+        catch (...)
+        {
+            cout<< "SYNTAX ERROR" << endl;
+            return false;
+        }
+    }
+
     return true;
 }
 
@@ -52,5 +78,6 @@ bool semanticParseSORT(){
 
 void executeSORT(){
     logger.log("executeSORT");
+    cout << "You made it" << endl;
     return;
 }
