@@ -52,6 +52,7 @@ bool syntacticParseSORT(){
         }
     }
 
+    BLOCK_COUNT = parsedQuery.sortBufferSize;
     return true;
 }
 
@@ -76,8 +77,54 @@ bool semanticParseSORT(){
     return true;
 }
 
+void mergeSort()
+{}
+
+
 void executeSORT(){
     logger.log("executeSORT");
-    cout << "You made it" << endl;
-    return;
+    // cout << "You made it" << endl;
+    
+    Table table = *(tableCatalogue.getTable(parsedQuery.sortRelationName));
+    int number_of_blocks = ceil(table.rowCount * 1.0 / table.maxRowsPerBlock);
+
+    int column_index = table.getColumnIndex(parsedQuery.sortColumnName);
+
+    int number_of_runs = ceil(number_of_blocks * 1.0 / BLOCK_COUNT);
+    int blocks_read = 0;
+
+    vector<Page> runs(number_of_runs);
+
+    // ---------------
+    //   INITIAL RUN
+    // ---------------
+
+    for(int i = 0; i < number_of_runs; i++) {
+
+        vector<vector<int>> rows;
+        int blocks_to_read = min((int)BLOCK_COUNT, number_of_blocks - blocks_read);  
+
+        for(int j = blocks_read; j < blocks_read + blocks_to_read; j++) {
+            
+            Page page_j = bufferManager.getPage(table.tableName, j);
+            vector<vector<int>> rows_in_page_j = page_j.getBlock();
+            cout << page_j.pageName << endl;
+            rows.insert(rows.end(), rows_in_page_j.begin(), rows_in_page_j.end());
+        }
+
+        sort(rows.begin(), rows.end(), [column_index](vector<int> a, vector<int> b) {
+            if(parsedQuery.sortingStrategy == ASC)
+                return a[column_index] < b[column_index];
+            else
+                return a[column_index] > b[column_index];
+        });
+
+
+        // Write the run file to disk
+        runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName);
+        blocks_read += blocks_to_read;
+    }
+
+    // Revert BLOCK_COUNT to original value
+    BLOCK_COUNT = 3;
 }

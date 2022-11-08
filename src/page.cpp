@@ -35,10 +35,10 @@ Page::Page(string tableName, int pageIndex)
     this->columnCount = table.columnCount;
     uint maxRowCount = table.maxRowsPerBlock;
     vector<int> row(columnCount, 0);
-    this->rows.assign(maxRowCount, row);
 
     ifstream fin(pageName, ios::in);
     this->rowCount = table.rowsPerBlockCount[pageIndex];
+    this->rows.assign(this->rowCount, row);
     int number;
     for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
     {
@@ -65,6 +65,46 @@ vector<int> Page::getRow(int rowIndex)
     if (rowIndex >= this->rowCount)
         return result;
     return this->rows[rowIndex];
+}
+
+
+vector<vector<int>> Page::getBlock() {
+    logger.log("Page::getBlock");
+    return this->rows;
+}
+
+void Page::writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tableName) {
+    
+    // Number of blocks for the run file
+    int no_of_blocks = ceil(rows.size() * 1.0 / bfr);
+
+    cout << bfr;
+    cout << rows.size();
+    auto begin = rows.begin();
+
+    for(int i = 0; i < no_of_blocks; i++) {
+        
+        string run_name = "../data/temp/" + tableName + "_run" + to_string(run_no) + "_Page" + to_string(i);
+    
+        ofstream fout(run_name , ios::trunc);
+        
+        auto row_end = next(begin, min(bfr, (int)rows.size()));
+        vector<vector<int>> block(begin, row_end);
+
+        begin = row_end;
+        
+        // if(block.size() != 0)
+        //     fout << block.size() << " " << block[0].size() << endl;
+        
+        for(int i = 0; i < block.size() ; i++) {
+            for(auto it = block[i].begin(); it != block[i].end(); it++) {
+                fout << *it << " ";
+            }
+            fout << endl;
+        }
+        fout.close();
+    }
+
 }
 
 Page::Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount)
