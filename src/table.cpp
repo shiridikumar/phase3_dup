@@ -5,6 +5,7 @@
 extern FILE* datafile;
 extern int fd_dfile;
 extern fstream fin;
+extern int locktype;
 /**
  * @brief Construct a new Table:: Table object
  *
@@ -62,8 +63,16 @@ bool Table::load()
     datafile=fopen(this->sourceFileName.c_str(),"r+");
     int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
     fd_dfile=fileno(datafile);
-    int lc=flock(fd_dfile,LOCK_EX);
-    cout<<"lock obtained for read "<<fd_dfile<<endl;
+    int lc;
+    if(locktype==0){
+        flock(fd_dfile,LOCK_SH);
+        cout<<"shared lock_1 obtained"<<endl;
+
+    }
+    else{
+        flock(fd_dfile,LOCK_EX);
+        cout<<"exclusive lock_1 obtained"<<endl;
+    }
     string line;
     if (getline(fin, line))
     {

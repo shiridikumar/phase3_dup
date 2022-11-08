@@ -15,6 +15,7 @@ TableCatalogue tableCatalogue;
 BufferManager bufferManager;
 FILE *datafile;
 int fd_dfile;
+int locktype;
 fstream fin;
 void doCommand()
 {
@@ -24,17 +25,34 @@ void doCommand()
     return;
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
 
     regex delim("[^\\s,]+");
     string command;
     // system("rm -rf ../data/temp");
-    string string ="../data/temp";
-    if(stat(string.c_str(), &buffer) !=0){
+    string st ="../data/temp";
+    if(stat(st.c_str(), &buffer) !=0){
         system("mkdir ../data/temp");
     }
-    // cout<<"atleast done this"<<endl;
+    // char *st="WRITE";
+    string a("WRITE");
+    string b(argv[1]);
+
+    cout<<1<<endl;
+   if(argc>1){
+       if(!(a.compare(b))){
+           locktype=1;
+           cout<<"*******************************"<<endl;
+       }
+       else{
+           locktype=0;
+       }
+   }
+   else{
+       locktype=0;
+   }
+
 
     while(!cin.eof())
     {
@@ -68,5 +86,13 @@ int main(void)
         }
 
         doCommand();
+    }
+    //  flock(LOCK_UN,fd_dfile);
+    if(locktype==0){
+        cout<<"released shared lock_1"<<endl;
+    }
+    else{
+         cout<<"released exclusive lock_1"<<endl;
+
     }
 }

@@ -21,67 +21,6 @@ TableCatalogue::~insertTable
 ParseQuery::clear
 
 Reading New Command: 
-UPDATE A COLUMN a ADD 10
-doCommand
-syntacticParse
-syntacticParseSOURCE
-semanticParse
-semanticParseSOURCE
-TableCatalogue::isTable
-TableCatalogue::getTable
-Cursor::Cursor
-BufferManager::getPage
-BufferManager::inPool
-BufferManager::insertIntoPool
-Page::Page
-TableCatalogue::getTable
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-Cursor::geNext
-Page::getRow
-Table::getColumnIndex
-Table::printRow
-TableCatalogue::getTable
-Table::getColumnIndex
-Page::writePage
-ParseQuery::clear
-
-Reading New Command: 
 
 TableCatalogue::~TableCatalogue
 Table::~unload

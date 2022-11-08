@@ -63,9 +63,8 @@ void executeUPDATE(){
     string pagename="../data/temp/"+table.tableName + "_Page" + to_string(0);
     pFile1 = fopen(pagename.c_str(), "r+");
     int fd1=fileno(pFile1);
-    // cout<<fd<<"---"<<fd1<<endl;
     int lc1=flock(fd1,LOCK_EX);
-    cout<<"lock obtained"<<endl;
+    cout<<"exclusive lock_2 obtained"<<endl;
 
     Cursor cursor(table.tableName, 0);
     int rowcount=table.rowCount;
@@ -87,12 +86,12 @@ void executeUPDATE(){
         table.writeRow(row,pFile,0);
 
     }
+    cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
+    int ind=bufferManager.BufferIndex(table.tableName,0);
     cout<<"unlocked"<<endl;
     fclose(pFile1);
     flock(LOCK_UN,fd_dfile);
     fclose(pFile);
     cout<<"completed update"<<endl;
-    cursor.page.update_columns(table.tableName,0,parsedQuery.column_name);
-    int ind=bufferManager.BufferIndex(table.tableName,0);
     return;
 }
