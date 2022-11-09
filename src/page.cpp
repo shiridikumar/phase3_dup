@@ -78,8 +78,8 @@ void Page::writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tabl
     // Number of blocks for the run file
     int no_of_blocks = ceil(rows.size() * 1.0 / bfr);
 
-    cout << bfr;
-    cout << rows.size();
+    // cout << bfr;
+    cout << rows.size()<<endl;
     auto begin = rows.begin();
 
     for(int i = 0; i < no_of_blocks; i++) {
@@ -88,13 +88,11 @@ void Page::writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tabl
     
         ofstream fout(run_name , ios::trunc);
         
-        auto row_end = next(begin, min(bfr, (int)rows.size()));
+        auto row_end = begin+ min(bfr, (int)rows.size()-i*bfr);
         vector<vector<int>> block(begin, row_end);
 
         begin = row_end;
-        
-        // if(block.size() != 0)
-        //     fout << block.size() << " " << block[0].size() << endl;
+        cout<<block.size()<<endl;
         
         for(int i = 0; i < block.size() ; i++) {
             for(auto it = block[i].begin(); it != block[i].end(); it++) {

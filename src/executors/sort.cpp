@@ -99,6 +99,7 @@ void executeSORT(){
     //   INITIAL RUN
     // ---------------
 
+
     for(int i = 0; i < number_of_runs; i++) {
 
         vector<vector<int>> rows;
@@ -124,6 +125,9 @@ void executeSORT(){
         runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName);
         blocks_read += blocks_to_read;
     }
+
+    
+
 
     // Revert BLOCK_COUNT to original value
     BLOCK_COUNT = 3;
