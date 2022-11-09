@@ -88,20 +88,17 @@ void Page::writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tabl
     
         ofstream fout(run_name , ios::trunc);
         
-        auto row_end = next(begin, min(bfr, (int)rows.size()));
-        vector<vector<int>> block(begin, row_end);
+        auto row_end = begin + min(bfr, (int)rows.size() - i * bfr);
 
-        begin = row_end;
-        
-        // if(block.size() != 0)
-        //     fout << block.size() << " " << block[0].size() << endl;
-        
-        for(int i = 0; i < block.size() ; i++) {
-            for(auto it = block[i].begin(); it != block[i].end(); it++) {
-                fout << *it << " ";
+        for(auto row = begin; row != row_end; row++) {
+            for(auto col = row->begin(); col != row->end(); col++) {
+                fout << *col << " ";
             }
             fout << endl;
         }
+
+        begin = row_end;
+        
         fout.close();
     }
 

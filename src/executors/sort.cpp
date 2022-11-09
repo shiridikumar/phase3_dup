@@ -108,7 +108,7 @@ void executeSORT(){
             
             Page page_j = bufferManager.getPage(table.tableName, j);
             vector<vector<int>> rows_in_page_j = page_j.getBlock();
-            cout << page_j.pageName << endl;
+            // cout << page_j.pageName << endl;
             rows.insert(rows.end(), rows_in_page_j.begin(), rows_in_page_j.end());
         }
 
