@@ -51,6 +51,31 @@ Page::Page(string tableName, int pageIndex)
     fin.close();
 }
 
+
+Page::Page(string tableName, int pageIndex,int runIndex)
+{
+    logger.log("Page::Page");
+    this->tableName = tableName;
+    this->pageIndex = pageIndex;
+    this->pageName = "../data/temp/" + this->tableName + "_run" + to_string(runIndex) +"_Page"+ to_string(pageIndex);
+    Table table = *tableCatalogue.getTable(tableName);
+    this->columnCount = table.columnCount;
+    vector<int> row(columnCount, 0);
+    ifstream fin(pageName, ios::in);
+    fin>>this->rowCount;
+    cout<<this->rowCount<<"_____________________"<<pageName<<endl;
+    this->rows.assign(this->rowCount, row);
+    int number;
+    for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
+    {
+        for (int columnCounter = 0; columnCounter < columnCount; columnCounter++)
+        {
+            fin >> number;
+            this->rows[rowCounter][columnCounter] = number;
+        }
+    }
+    fin.close();
+}
 /**
  * @brief Get row from page indexed by rowIndex
  * 
@@ -88,18 +113,18 @@ void Page::writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tabl
     
         ofstream fout(run_name , ios::trunc);
         
-        auto row_end = begin+ min(bfr, (int)rows.size()-i*bfr);
-        vector<vector<int>> block(begin, row_end);
+        auto row_end = begin + min(bfr, (int)rows.size() - i * bfr);
+        fout<<min(bfr, (int)rows.size() - i * bfr)<<endl;
 
-        begin = row_end;
-        cout<<block.size()<<endl;
-        
-        for(int i = 0; i < block.size() ; i++) {
-            for(auto it = block[i].begin(); it != block[i].end(); it++) {
-                fout << *it << " ";
+        for(auto row = begin; row != row_end; row++) {
+            for(auto col = row->begin(); col != row->end(); col++) {
+                fout << *col << " ";
             }
             fout << endl;
         }
+
+        begin = row_end;
+        
         fout.close();
     }
 

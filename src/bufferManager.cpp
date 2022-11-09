@@ -23,6 +23,16 @@ Page BufferManager::getPage(string tableName, int pageIndex)
         return this->insertIntoPool(tableName, pageIndex);
 }
 
+Page BufferManager::getPage(string tableName, int pageIndex,int runIndex)
+{
+    logger.log("BufferManager::getPage");
+    string pageName = "../data/temp/"+tableName + "_run" + to_string(runIndex) + "_Page" + to_string(pageIndex);
+    if (this->inPool(pageName))
+        return this->getFromPool(pageName);
+    else
+        return this->insertIntoPool(tableName, pageIndex,runIndex);
+}
+
 /**
  * @brief Checks to see if a page exists in the pool
  *
@@ -70,6 +80,16 @@ Page BufferManager::insertIntoPool(string tableName, int pageIndex)
 {
     logger.log("BufferManager::insertIntoPool");
     Page page(tableName, pageIndex);
+    if (this->pages.size() >= BLOCK_COUNT)
+        pages.pop_front();
+    pages.push_back(page);
+    return page;
+}
+
+Page BufferManager::insertIntoPool(string tableName, int pageIndex,int runIndex)
+{
+    logger.log("BufferManager::insertIntoPool");
+    Page page(tableName, pageIndex,runIndex);
     if (this->pages.size() >= BLOCK_COUNT)
         pages.pop_front();
     pages.push_back(page);
