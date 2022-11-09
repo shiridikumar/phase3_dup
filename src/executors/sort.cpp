@@ -141,47 +141,78 @@ void executeSORT()
     int dm = min((int)BLOCK_COUNT - 1, number_of_runs);
     vector<int> pointers(number_of_runs, 0);
     int point = 0;
-    cout << dm << "******" << number_of_runs << endl;
     int pindex = 0;
     vector<int> runpointers(number_of_runs, 0);
-    for (int j = 0; j < BLOCK_COUNT; j++)
+
+    point = 0;
+    vector<vector<int>> res;
+    for (int i = 0; i < dm; i++)
     {
-        point=0;
-        for (int i = 0; i < dm; i++)
+        int flag = 1;
+        while (flag == 1)
         {
-             vector<vector<vector<int>> > blocks;
+            flag = 0;
+            vector<vector<vector<int>>> blocks;
             for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
             {
-               
-                if(runpointers[ind]<blocksInrun[ind]){
+
+                if (runpointers[ind] < blocksInrun[ind])
+                {
                     Page runblock = bufferManager.getPage(table.tableName, runpointers[ind], ind);
-                    vector<vector<int> > pageblock=runblock.getBlock();
+                    vector<vector<int>> pageblock = runblock.getBlock();
                     blocks.push_back(pageblock);
-                    runpointers[ind] += 1;
+                    // runpointers[ind] += 1;
+                    flag = 1;
+                }
+                else
+                {
+                    blocks.push_back({});
                 }
             }
-            vector<vector<int> >res;
-            int mi_pointer=0;
-            int mi=INT_MAX;
-            for(int ind=point;ind<point +min(dm, number_of_runs - point);ind++)
+
+            int mi_pointer = -1;
+            int mi = INT_MAX;
+
+            for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
             {
-                if(runpointers[ind]<blocksInrun[ind]){
-                    if(blocks[ind][pointers[ind]][0]<mi){
-                        mi_pointer=ind;
+                if (runpointers[ind] < blocksInrun[ind])
+                {
+                    if (blocks[ind - point][pointers[ind - point]][0] < mi)
+                    {
+                        mi_pointer = ind;
                     }
                 }
             }
-            res.push_back(blocks[mi_pointer][pointers[mi_pointer]]);
-            pointers[mi_pointer]=0;
-            point += dm;
-            if (point > number_of_runs)
+            if (mi_pointer != -1)
             {
-                 cout << "PHASE BREAK"
-                 << "-------------------------------------------------------------" << endl;
-                break;
+                res.push_back(blocks[mi_pointer - point][pointers[mi_pointer]]);
+
+                pointers[mi_pointer] += 1;
+                if (blocks[mi_pointer - point].size() == pointers[mi_pointer])
+                {
+                    runpointers[mi_pointer] += 1;
+                    pointers[mi_pointer] = 0;
+                }
             }
-            cout << "PHASE BREAK"
-                 << "-------------------------------------------------------------" << endl;
+        }
+        for (int i = 0; i < res.size(); i++)
+        {
+            for (auto it = res[i].begin(); it != res[i].end(); it++)
+            {
+                cout << *it << " ";
+            }
+            cout << endl;
+        }
+        if (res.size() != 0)
+        {
+            res.clear();
+        }
+        cout << "-------------------group end---------------------" << endl;
+
+        point += dm;
+        if (point >= number_of_runs)
+        {
+            break;
         }
     }
 

@@ -63,7 +63,7 @@ Page::Page(string tableName, int pageIndex,int runIndex)
     vector<int> row(columnCount, 0);
     ifstream fin(pageName, ios::in);
     fin>>this->rowCount;
-    cout<<this->rowCount<<"_____________________"<<pageName<<endl;
+    // cout<<this->rowCount<<"_____________________"<<pageName<<endl;
     this->rows.assign(this->rowCount, row);
     int number;
     for (uint rowCounter = 0; rowCounter < this->rowCount; rowCounter++)
