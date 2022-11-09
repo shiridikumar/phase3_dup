@@ -149,9 +149,10 @@ void executeSORT()
         point=0;
         for (int i = 0; i < dm; i++)
         {
+             vector<vector<vector<int>> > blocks;
             for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
             {
-                vector<vector<vector<int>> > blocks;
+               
                 if(runpointers[ind]<blocksInrun[ind]){
                     Page runblock = bufferManager.getPage(table.tableName, runpointers[ind], ind);
                     vector<vector<int> > pageblock=runblock.getBlock();
@@ -159,11 +160,19 @@ void executeSORT()
                     runpointers[ind] += 1;
                 }
             }
-
+            vector<vector<int> >res;
+            int mi_pointer=0;
+            int mi=INT_MAX;
             for(int ind=point;ind<point +min(dm, number_of_runs - point);ind++)
             {
-                
+                if(runpointers[ind]<blocksInrun[ind]){
+                    if(blocks[ind][pointers[ind]][0]<mi){
+                        mi_pointer=ind;
+                    }
+                }
             }
+            res.push_back(blocks[mi_pointer][pointers[mi_pointer]]);
+            pointers[mi_pointer]=0;
             point += dm;
             if (point > number_of_runs)
             {
