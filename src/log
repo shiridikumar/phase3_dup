@@ -2,3 +2,9 @@ BufferManager::BufferManager
 ParseQuery::clear
 
 Reading New Command: 
+QUIR
+ParseQuery::clear
+
+Reading New Command: 
+QUIT
+TableCatalogue::~TableCatalogue

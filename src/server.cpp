@@ -30,7 +30,9 @@ int main(int argc, char* argv[])
 
     regex delim("[^\\s,]+");
     string command;
-    // system("rm -rf ../data/temp");
+    if(argc==1){
+        system("rm -rf ../data/temp");
+    }
     string st ="../data/temp";
     if(stat(st.c_str(), &buffer) !=0){
         system("mkdir ../data/temp");
