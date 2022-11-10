@@ -27,6 +27,10 @@ bool syntacticParse()
         return syntacticParseEXPORT();
     else if(possibleQueryType == "SOURCE")
         return syntacticParseSOURCE();
+    else if(possibleQueryType=="UPDATE"){
+        return syntacticParseUPDATE();
+    }
+    
     else
     {
         string resultantRelationName = possibleQueryType;

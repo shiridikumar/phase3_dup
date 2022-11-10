@@ -1,5 +1,11 @@
 #include "global.h"
-
+#include <sys/file.h>
+#include <ext/stdio_filebuf.h>
+#include <unistd.h>
+extern FILE* datafile;
+extern int fd_dfile;
+extern fstream fin;
+extern int locktype;
 /**
  * @brief Construct a new Table:: Table object
  *
@@ -54,15 +60,33 @@ bool Table::load()
 {
     logger.log("Table::load");
     fstream fin(this->sourceFileName, ios::in);
+    datafile=fopen(this->sourceFileName.c_str(),"r+");
+    int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
+    fd_dfile=fileno(datafile);
+    int lc;
+    if(locktype==0){
+        flock(fd_dfile,LOCK_SH);
+        cout<<"shared lock_1 obtained"<<endl;
+
+    }
+    else{
+        flock(fd_dfile,LOCK_EX);
+        cout<<"exclusive lock_1 obtained"<<endl;
+    }
     string line;
     if (getline(fin, line))
     {
-        fin.close();
-        if (this->extractColumnNames(line))
-            if (this->blockify())
+        if (this->extractColumnNames(line)){
+           
+            if (this->blockify()){
+                fin.close();
+                // fclose(datafile);
                 return true;
+            }
+        }
     }
     fin.close();
+
     return false;
 }
 

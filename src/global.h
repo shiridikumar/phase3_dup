@@ -1,5 +1,4 @@
 #include"executor.h"
-
 extern float BLOCK_SIZE;
 extern uint BLOCK_COUNT;
 extern uint PRINT_COUNT;

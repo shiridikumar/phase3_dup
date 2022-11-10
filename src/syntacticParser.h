@@ -18,6 +18,7 @@ enum QueryType
     SELECTION,
     SORT,
     SOURCE,
+    UPDATE,
     UNDETERMINED
 };
 
@@ -46,6 +47,13 @@ enum SelectType
     NO_SELECT_CLAUSE
 };
 
+enum Operator
+{
+    MULTIPLY,
+    SUBTRACT,
+    ADD
+};
+
 class ParsedQuery
 {
 
@@ -53,6 +61,7 @@ public:
     QueryType queryType = UNDETERMINED;
 
     string clearRelationName = "";
+    string column_name="";
 
     string crossResultRelationName = "";
     string crossFirstRelationName = "";
@@ -77,6 +86,8 @@ public:
     string loadRelationName = "";
 
     string printRelationName = "";
+    Operator operator_=ADD;
+    float update_value=0;
 
     string projectionResultRelationName = "";
     vector<string> projectionColumnList;
@@ -120,6 +131,7 @@ bool syntacticParseRENAME();
 bool syntacticParseSELECTION();
 bool syntacticParseSORT();
 bool syntacticParseSOURCE();
+bool syntacticParseUPDATE();
 
 bool isFileExists(string tableName);
 bool isQueryFile(string fileName);

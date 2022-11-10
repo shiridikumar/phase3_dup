@@ -17,7 +17,7 @@ EXEC_OBJS = $(EXEC_SRC:.cpp=.o)
 all: server
 
 server: $(OBJS) $(EXEC_OBJS)
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(EXEC_OBJS)
+	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(EXEC_OBJS) -pthread
 
 clean:
 	rm -f *.o *~

@@ -1,17 +1,22 @@
 //Server Code
 #include "global.h"
+#include <sys/stat.h>
 
 using namespace std;
 
 float BLOCK_SIZE = 1;
 uint BLOCK_COUNT = 2;
 uint PRINT_COUNT = 20;
+struct stat buffer;
 Logger logger;
 vector<string> tokenizedQuery;
 ParsedQuery parsedQuery;
 TableCatalogue tableCatalogue;
 BufferManager bufferManager;
-
+FILE *datafile;
+int fd_dfile;
+int locktype;
+fstream fin;
 void doCommand()
 {
     logger.log("doCommand");
@@ -20,13 +25,34 @@ void doCommand()
     return;
 }
 
-int main(void)
+int main(int argc, char* argv[])
 {
 
     regex delim("[^\\s,]+");
     string command;
-    system("rm -rf ../data/temp");
-    system("mkdir ../data/temp");
+    // system("rm -rf ../data/temp");
+    string st ="../data/temp";
+    if(stat(st.c_str(), &buffer) !=0){
+        system("mkdir ../data/temp");
+    }
+    // char *st="WRITE";
+    string a("WRITE");
+    string b(argv[1]);
+
+    cout<<1<<endl;
+   if(argc>1){
+       if(!(a.compare(b))){
+           locktype=1;
+           cout<<"*******************************"<<endl;
+       }
+       else{
+           locktype=0;
+       }
+   }
+   else{
+       locktype=0;
+   }
+
 
     while(!cin.eof())
     {
@@ -60,5 +86,13 @@ int main(void)
         }
 
         doCommand();
+    }
+    //  flock(LOCK_UN,fd_dfile);
+    if(locktype==0){
+        cout<<"released shared lock_1"<<endl;
+    }
+    else{
+         cout<<"released exclusive lock_1"<<endl;
+
     }
 }
