@@ -90,8 +90,8 @@ void executeUPDATE(){
     int ind=bufferManager.BufferIndex(table.tableName,0);
     cout<<"unlocked"<<endl;
     fclose(pFile1);
-    flock(LOCK_UN,fd_dfile);
     fclose(pFile);
+    flock(LOCK_UN,fd_dfile);flock(LOCK_UN,fd_dfile);flock(LOCK_UN,fd_dfile);
     cout<<"completed update"<<endl;
     return;
 }

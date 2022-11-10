@@ -64,14 +64,15 @@ bool Table::load()
     int fd = static_cast< __gnu_cxx::stdio_filebuf< char > * const >( fin.rdbuf() )->fd();
     fd_dfile=fileno(datafile);
     int lc;
-    if(locktype==0){
-        flock(fd_dfile,LOCK_SH);
-        cout<<"shared lock_1 obtained"<<endl;
-
-    }
-    else{
+    if(locktype==1){
         flock(fd_dfile,LOCK_EX);
         cout<<"exclusive lock_1 obtained"<<endl;
+    }
+    else{
+        flock(fd_dfile,LOCK_SH);
+        if(locktype!=-1){
+            cout<<"shared lock_1 obtained"<<endl;
+        }
     }
     string line;
     if (getline(fin, line))

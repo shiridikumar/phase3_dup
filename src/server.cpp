@@ -45,14 +45,13 @@ int main(int argc, char* argv[])
    if(argc>1){
        if(!(a.compare(b))){
            locktype=1;
-           cout<<"*******************************"<<endl;
        }
        else{
            locktype=0;
        }
    }
    else{
-       locktype=0;
+       locktype=-1;
    }
 
 
@@ -90,11 +89,13 @@ int main(int argc, char* argv[])
         doCommand();
     }
     //  flock(LOCK_UN,fd_dfile);
-    if(locktype==0){
-        cout<<"released shared lock_1"<<endl;
-    }
-    else{
-         cout<<"released exclusive lock_1"<<endl;
+    if(locktype!=-1){
+        if(locktype==0){
+            cout<<"released shared lock_1"<<endl;
+        }
+        else{
+            cout<<"released exclusive lock_1"<<endl;
 
+        }
     }
 }

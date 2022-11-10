@@ -8,10 +8,12 @@ def execute():
         if(i[0]=="UPDATE"):
             update_flag="WRITE"
             break
+    # update_flag="READ"
     subprocess.Popen('./server {} <"cmds.txt"'.format(update_flag), shell=True)
 
 l=[]
-for i in range(10):
+# calling 5 transaction using 5 threads
+for i in range(5):
     t = threading.Thread(target=execute)
     t.start()
     l.append(t)
