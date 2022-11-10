@@ -53,4 +53,4 @@ In order to indicate a transaction is a write we pass a flag as argument to ./se
 
 # Video Documentation
 
-The video documentation for Part-2 can be viewed here: [https://drive.google.com/file/d/1FRgfA26rpIeq-9L9UQk6xuFXe-bYOQvP/view?usp=sharing](https://drive.google.com/file/d/1FRgfA26rpIeq-9L9UQk6xuFXe-bYOQvP/view?usp=sharing).
+The video documentation for Part-2 can be viewed here: [https://iiitaphyd-my.sharepoint.com/:v:/g/personal/shikhar_saxena_research_iiit_ac_in/Ebvs18Nk2BtChHqQDI9ySaMB_mnD-xjOBJDAIYT10GCtGw?e=GvcQNC](https://iiitaphyd-my.sharepoint.com/:v:/g/personal/shikhar_saxena_research_iiit_ac_in/Ebvs18Nk2BtChHqQDI9ySaMB_mnD-xjOBJDAIYT10GCtGw?e=GvcQNC)
