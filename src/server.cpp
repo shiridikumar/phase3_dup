@@ -5,7 +5,7 @@
 using namespace std;
 
 float BLOCK_SIZE = 1;
-uint BLOCK_COUNT = 2;
+uint BLOCK_COUNT = 3;
 uint PRINT_COUNT = 20;
 struct stat buffer;
 Logger logger;
@@ -37,9 +37,11 @@ int main(int argc, char* argv[])
     }
     // char *st="WRITE";
     string a("WRITE");
-    string b(argv[1]);
+    string b;
+    if(argc > 1)
+        b = argv[1];
 
-    cout<<1<<endl;
+    // cout<<1<<endl;
    if(argc>1){
        if(!(a.compare(b))){
            locktype=1;
