@@ -30,8 +30,8 @@ class BufferManager{
     public:
     
     BufferManager();
-    Page getPage(string tableName, int pageIndex,int runIndex);
-    Page insertIntoPool(string tableName, int pageIndex,int runIndex);
+    Page getPage(string tableName, int pageIndex,int runIndex,int phaseIndex);
+    Page insertIntoPool(string tableName, int pageIndex,int runIndex,int phaseIndex);
     Page getPage(string tableName, int pageIndex);
     void writePage(string pageName, vector<vector<int>> rows);
     void deleteFile(string tableName, int pageIndex);

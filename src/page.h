@@ -23,10 +23,12 @@ class Page{
     string pageName = "";
     Page();
     Page(string tableName, int pageIndex);
-    Page(string tableName, int pageIndex,int runIndex);
+    Page(string tableName, int pageIndex,int runIndex,int phaseIndex);
     Page(string tableName, int pageIndex, vector<vector<int>> rows, int rowCount);
     vector<int> getRow(int rowIndex);
     vector<vector<int>> getBlock();
-    void writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tableName);
+    void writeBlock(vector<vector<int>> rows, int run_no, int bfr, string tableName,int phaseIndex);
+    void writeBlock(vector<vector<int>> rows,int pageindex, int run_no, int bfr, string tableName,int phaseIndex);
+    void writeBlock(vector<vector<int>> rows,int pageindex, int bfr, string tableName);
     void writePage();
 };

@@ -87,10 +87,6 @@ bool semanticParseSORT()
     return true;
 }
 
-void mergeSort()
-{
-}
-
 void executeSORT()
 {
     logger.log("executeSORT");
@@ -122,7 +118,6 @@ void executeSORT()
 
             Page page_j = bufferManager.getPage(table.tableName, j);
             vector<vector<int>> rows_in_page_j = page_j.getBlock();
-            // cout << page_j.pageName << endl;
             rows.insert(rows.end(), rows_in_page_j.begin(), rows_in_page_j.end());
         }
 
@@ -133,91 +128,142 @@ void executeSORT()
             else
                 return a[column_index] > b[column_index]; });
 
-        // Write the run file to disk
-        runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName);
+        runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName, 0);
         blocks_read += blocks_to_read;
         blocksInrun[i] = blocks_to_read;
     }
     int dm = min((int)BLOCK_COUNT - 1, number_of_runs);
-    vector<int> pointers(number_of_runs, 0);
     int point = 0;
     int pindex = 0;
-    vector<int> runpointers(number_of_runs, 0);
-
-    point = 0;
+    string name=parsedQuery.sortResultRelationName;
+    Table *result =new Table(parsedQuery.sortResultRelationName,table.columns);
     vector<vector<int>> res;
-    for (int i = 0; i < dm; i++)
+    int phase = 0;
+
+    while (number_of_runs != 1)
     {
-        int flag = 1;
-        while (flag == 1)
+        point = 0;
+        vector<int> runpointers(number_of_runs, 0);
+        vector<int> pointers(number_of_runs, 0);
+        int total_iter = ceil(number_of_runs * 1.0 / dm);
+        for (int i = 0; i < total_iter; i++)
         {
-            flag = 0;
-            vector<vector<vector<int>>> blocks;
-            for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
+            int pind=0;
+            int flag = 1;
+            while (flag == 1)
             {
-
-                if (runpointers[ind] < blocksInrun[ind])
+                flag = 0;
+                vector<vector<vector<int>>> blocks(BLOCK_COUNT);
+                for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
                 {
-                    Page runblock = bufferManager.getPage(table.tableName, runpointers[ind], ind);
-                    vector<vector<int>> pageblock = runblock.getBlock();
-                    blocks.push_back(pageblock);
-                    // runpointers[ind] += 1;
-                    flag = 1;
-                }
-                else
-                {
-                    blocks.push_back({});
-                }
-            }
 
-            int mi_pointer = -1;
-            int mi = INT_MAX;
-
-            for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
-            {
-                if (runpointers[ind] < blocksInrun[ind])
-                {
-                    if (blocks[ind - point][pointers[ind - point]][0] < mi)
+                    if (runpointers[ind] < blocksInrun[ind])
                     {
-                        mi_pointer = ind;
+                        Page runblock = bufferManager.getPage(table.tableName, runpointers[ind], ind, phase);
+                        vector<vector<int>> pageblock = runblock.getBlock();
+                        blocks[ind - point] = pageblock;
+                        flag = 1;
+                    }
+                }
+
+                int mi_pointer = -1;
+                int mi = INT_MAX;
+                if(parsedQuery.sortingStrategy==DESC){
+                    mi=INT_MIN;
+
+
+                }
+
+                for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
+                {
+                    if (runpointers[ind] < blocksInrun[ind])
+                    {
+                        if(parsedQuery.sortingStrategy==ASC){
+                            if (blocks[ind - point][pointers[ind]][column_index] < mi)
+                            {
+                                mi_pointer = ind;
+                                mi = blocks[ind - point][pointers[ind]][column_index];
+                            }
+                        }
+                        else{
+                            if (blocks[ind - point][pointers[ind]][column_index] > mi)
+                            {
+                                mi_pointer = ind;
+                                mi = blocks[ind - point][pointers[ind]][column_index];
+                            }
+
+                        }
+                    }
+                }
+                if (mi_pointer != -1)
+                {
+                    res.push_back(blocks[mi_pointer - point][pointers[mi_pointer]]);
+                    if (res.size() == table.maxRowsPerBlock)
+                    {
+                        Page p = Page();
+                        if(total_iter!=1){
+                            p.writeBlock(res, pind,i, table.maxRowsPerBlock, table.tableName, phase+1);
+                            res.clear();
+                            pind+=1;
+                        }
+                        else{
+                            p.writeBlock(res, pind, table.maxRowsPerBlock,result->tableName);
+                            res.clear();
+                            pind+=1;
+
+                        }
+                    }
+                    pointers[mi_pointer] += 1;
+                    if (blocks[mi_pointer - point].size() == pointers[mi_pointer])
+                    {
+                        runpointers[mi_pointer] += 1;
+                        pointers[mi_pointer] = 0;
                     }
                 }
             }
-            if (mi_pointer != -1)
-            {
-                res.push_back(blocks[mi_pointer - point][pointers[mi_pointer]]);
 
-                pointers[mi_pointer] += 1;
-                if (blocks[mi_pointer - point].size() == pointers[mi_pointer])
+            for (int ind = point; ind < point + min(dm, number_of_runs - point); ind++)
+            {
+                for (int pageind = 0; pageind < blocksInrun[ind]; pageind++)
                 {
-                    runpointers[mi_pointer] += 1;
-                    pointers[mi_pointer] = 0;
+                    string pageName = "../data/temp/" + table.tableName + "_phase" + to_string(phase) + "_run" + to_string(ind) + "_Page" + to_string(pageind);
+                    bufferManager.deleteFile(pageName);
                 }
             }
-        }
-        for (int i = 0; i < res.size(); i++)
-        {
-            for (auto it = res[i].begin(); it != res[i].end(); it++)
+            if (res.size() != 0)
             {
-                cout << *it << " ";
+                Page p = Page();
+                if(total_iter!=1){
+                    p.writeBlock(res,pind, i, table.maxRowsPerBlock, table.tableName, phase+1);
+                    pind+=1;
+                    res.clear();
+                }
+                else{
+                    p.writeBlock(res,pind, table.maxRowsPerBlock,result->tableName);
+                    pind+=1;
+                    res.clear();
+
+                }
             }
-            cout << endl;
+            blocksInrun[i] = pind;
+            pind=0;
+            point += dm;
+            if (point >= number_of_runs)
+            {
+                break;
+            }
         }
-        if (res.size() != 0)
-        {
-            res.clear();
-        }
-        cout << "-------------------group end---------------------" << endl;
+        phase += 1;
+        
 
-        point += dm;
-        if (point >= number_of_runs)
-        {
-            break;
-        }
+        number_of_runs = total_iter;
     }
+    result->blockCount=table.blockCount;
+    result->maxRowsPerBlock=table.maxRowsPerBlock;
+    result->rowsPerBlockCount=table.rowsPerBlockCount;
+    result->rowCount=table.rowCount;
+    result->columnCount=table.columnCount;result->columns=table.columns;
+    tableCatalogue.insertTable(result);
 
-    // }
-
-    // Revert BLOCK_COUNT to original value
     BLOCK_COUNT = 3;
 }
