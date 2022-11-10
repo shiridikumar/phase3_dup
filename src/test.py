@@ -1,7 +1,7 @@
 import pandas as pd
-df=pd.read_csv("../data/A3.csv")
-df1=pd.read_csv("../data/S1.csv")
-df.sort_values("e",inplace=True)
+df=pd.read_csv("../data/C4.csv")
+df1=pd.read_csv("../data/S4.csv")
+df.sort_values("c",inplace=True,ascending=True)
 cols=list(df.columns)
 
 df=df.values
@@ -14,7 +14,7 @@ print(vals,counts)
 vals1,counts1=np.unique(df1,return_counts=True,axis=0)
 flag=True
 for i in range(len(df)-1):
-    if(df[i][cols.index("e")]>df[i+1][cols.index("e")]):
+    if(df[i][cols.index("c")]>df[i+1][cols.index("c")]):
         flag=False
         break
 

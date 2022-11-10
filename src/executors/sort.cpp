@@ -127,8 +127,32 @@ void executeSORT()
                 return a[column_index] < b[column_index];
             else
                 return a[column_index] > b[column_index]; });
+        if(number_of_runs!=1){
+            runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName, 0);
+        }
+        else{
+            vector<vector<int> > temp_res;
+            int pageind=0;
+            for(int ind=0;ind<rows.size();ind++){
+                temp_res.push_back(rows[ind]);
+                if(temp_res.size()==table.maxRowsPerBlock){
+                    Page p =Page();
+                    p.writeBlock(temp_res,pageind,table.maxRowsPerBlock,parsedQuery.sortResultRelationName);
+                    temp_res.clear();
+                    pageind+=1;
+                }
 
-        runs[i].writeBlock(rows, i, table.maxRowsPerBlock, table.tableName, 0);
+            }
+            if(temp_res.size()!=0){
+                Page p =Page();
+                p.writeBlock(temp_res,pageind,table.maxRowsPerBlock,parsedQuery.sortResultRelationName);
+                temp_res.clear();
+                pageind+=1;
+
+            }
+            // runs[i].writeBlock(rows, i, table.maxRowsPerBlock, parsedQuery.sortResultRelationName);
+
+        }
         blocks_read += blocks_to_read;
         blocksInrun[i] = blocks_to_read;
     }
