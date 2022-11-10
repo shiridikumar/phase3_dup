@@ -122,7 +122,7 @@ void executeSORT()
         }
 
         sort(rows.begin(), rows.end(), [column_index](vector<int> a, vector<int> b)
-             {
+            {
             if(parsedQuery.sortingStrategy == ASC)
                 return a[column_index] < b[column_index];
             else
